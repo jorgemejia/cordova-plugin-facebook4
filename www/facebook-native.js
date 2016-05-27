@@ -4,6 +4,11 @@ exports.getLoginStatus = function getLoginStatus (s, f) {
   exec(s, f, 'FacebookConnectPlugin', 'getLoginStatus', [])
 }
 
+exports.postToFacebook = function postToFacebook (options, s, f) {
+  options = options || {}
+  exec(s, f, 'FacebookConnectPlugin', 'postToFacebook', [options])
+}
+
 exports.showDialog = function showDialog (options, s, f) {
   exec(s, f, 'FacebookConnectPlugin', 'showDialog', [options])
 }
