@@ -319,7 +319,12 @@ public class ConnectPlugin extends CordovaPlugin {
             executeGraph(args, callbackContext);
 
             return true;
-        } else if (action.equals("appInvite")) {
+            
+        }else if (action.equals("postToFacebook")) {
+            postToFacebook(args, callbackContext);
+            return true;
+            
+        }else if (action.equals("appInvite")) {
             executeAppInvite(args, callbackContext);
 
             return true;
@@ -638,6 +643,51 @@ public class ConnectPlugin extends CordovaPlugin {
             // Request new read permissions
             loginManager.logInWithReadPermissions(cordova.getActivity(), permissions);
         }
+    }
+    
+    private void postToFacebook(JSONArray args, CallbackContext callbackContext) throws JSONException {
+
+        graphContext = callbackContext;
+
+        if (hasAccessToken()) {
+
+        } else {
+            // Session not open
+            callbackContext.error("Session not open.");
+            return;
+        }
+
+        JSONArray jObj = args.getJSONArray(0);
+        JSONObject jObj2 = jObj.getJSONObject(0);
+        String mensaje = jObj2.getString("message");
+        String link = jObj2.getString("link");
+        String place = jObj2.getString("place");
+        Bundle params = new Bundle();
+        params.putString("message", mensaje);
+        params.putString("link", link);
+        params.putString("place", place);
+
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me/feed",
+                params,
+                HttpMethod.POST,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        //handle the result
+                        if (graphContext != null) {
+                            if (response.getError() != null) {
+                                graphContext.error(getFacebookRequestErrorResponse(response.getError()));
+                            } else {
+                                graphContext.success(response.getJSONObject());
+                            }
+                            graphPath = null;
+                            graphContext = null;
+                        }
+                        System.out.println("Console is: " +response);
+                    }
+                }
+        ).executeAsync();
     }
 
     private void executeLogEvent(JSONArray args, CallbackContext callbackContext) throws JSONException {
