@@ -27,4 +27,5 @@
 - (void)appInvite:(CDVInvokedUrlCommand *) command;
 - (void)getDeferredApplink:(CDVInvokedUrlCommand *) command;
 - (void)activateApp:(CDVInvokedUrlCommand *)command;
+- (void)postToFacebook:(CDVInvokedUrlCommand *)command;
 @end
